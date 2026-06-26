@@ -4,9 +4,9 @@
  */
 export const SITE = {
   /** Brand mark shown in the header. */
-  name: "Your Name",
+  name: "fotos de nat",
   /** Used in <title>, Open Graph, and structured data. */
-  title: "Your Name — Film Photography",
+  title: "fotos de nat — Film Photography",
   description:
     "Film photographs from around the world, organised by place and film stock.",
   /** Canonical site URL. Update to your Vercel domain before deploying. */
@@ -15,9 +15,9 @@ export const SITE = {
   locale: "en",
   /** Header social links. Leave a value empty ("") to hide that icon. */
   social: {
-    instagram: "https://instagram.com/your-handle",
-    x: "https://x.com/your-handle",
-    email: "you@example.com",
+    instagram: "",
+    x: "",
+    email: "",
   },
 } as const;
 

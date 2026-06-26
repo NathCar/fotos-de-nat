@@ -1,11 +1,9 @@
 /** Domain types shared across the app, independent of where content comes from. */
+import type { ImageMetadata } from "astro";
 
 export interface Photo {
-  /** Fully-resolved image URL (placeholder service today, local/Drive asset later). */
-  src: string;
-  /** Intrinsic dimensions — required to reserve layout space and avoid shift. */
-  width: number;
-  height: number;
+  /** Processed local image (Astro reads its dimensions for optimization). */
+  src: ImageMetadata;
   /** Alt text for screen readers; falls back to the gallery name when omitted. */
   alt: string;
   /** Optional human caption shown in the UI. */
@@ -22,8 +20,8 @@ export interface Gallery {
   order: number;
   /** Where the photos were taken, e.g. "Lofoten, Norway". */
   location: string;
-  /** Film stock used, e.g. "Ektar 100". */
-  filmStock: string;
+  /** Film stock used, e.g. "Ektar 100". Optional — omit for non-film galleries. */
+  filmStock?: string;
   /** Optional short intro for the gallery (SEO + future use). */
   intro?: string;
   photos: Photo[];
@@ -31,5 +29,5 @@ export interface Gallery {
 
 /** Combined header label used in captions and the document title. */
 export function galleryName(g: Pick<Gallery, "location" | "filmStock">): string {
-  return `${g.location} · ${g.filmStock}`;
+  return g.filmStock ? `${g.location} · ${g.filmStock}` : g.location;
 }

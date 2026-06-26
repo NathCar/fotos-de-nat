@@ -15,7 +15,7 @@ if (!first) {
 
 const title = `${SITE.name} — Film Photography`;
 const description = first.intro ?? SITE.description;
-const ogImage = first.photos[0]?.src;
+const ogImage = first.photos[0]?.src.src;
 ---
 
 <BaseLayout title={title} description={description} image={ogImage}>
