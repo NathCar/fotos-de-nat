@@ -4,7 +4,6 @@ location: Nicaragua
 intro: Photographs from Nicaragua.
 # filmStock: "Portra 400"   # uncomment + set if you want a film stock in the caption
 photos:
-  - src: ./IMG_3070.JPEG
   - src: ./IMG_4033.JPEG
   - src: ./IMG_4034.JPEG
   - src: ./IMG_4035.JPEG
