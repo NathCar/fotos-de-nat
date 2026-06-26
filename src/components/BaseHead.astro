@@ -1,0 +1,47 @@
+---
+import { SITE } from "../site.config";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Absolute or site-relative URL of a representative image for social cards. */
+  image?: string;
+}
+
+const {
+  title = SITE.title,
+  description = SITE.description,
+  image,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const ogImage = image ? new URL(image, canonical) : undefined;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="canonical" href={canonical.href} />
+
+<title>{title}</title>
+<meta name="description" content={description} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical.href} />
+{ogImage && <meta property="og:image" content={ogImage.href} />}
+
+<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage.href} />}
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>

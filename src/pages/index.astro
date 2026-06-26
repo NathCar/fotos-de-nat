@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import GalleryView from "../components/GalleryView.astro";
+import { content } from "../lib/content-source";
+import { SITE } from "../site.config";
+
+const galleries = await content.getGalleries();
+const first = galleries[0];
+
+if (!first) {
+  throw new Error(
+    "No galleries found. Add a Markdown file under src/content/galleries/.",
+  );
+}
+
+const title = `${SITE.name} — Film Photography`;
+const description = first.intro ?? SITE.description;
+const ogImage = first.photos[0]?.src;
+---
+
+<BaseLayout title={title} description={description} image={ogImage}>
+  <GalleryView galleries={galleries} gallery={first} number={1} />
+</BaseLayout>

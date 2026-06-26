@@ -1,0 +1,96 @@
+---
+import { SITE } from "../site.config";
+import SocialLinks from "./SocialLinks.astro";
+import { galleryUrl } from "../lib/routes";
+import type { Gallery } from "../lib/types";
+import { galleryName } from "../lib/types";
+
+interface Props {
+  galleries: Gallery[];
+  currentSlug: string;
+}
+
+const { galleries, currentSlug } = Astro.props;
+---
+
+<header class="top">
+  <a class="mark" href="/">{SITE.name}</a>
+
+  <nav class="pager" aria-label="Galleries">
+    {
+      galleries.map((g, i) => {
+        const isCurrent = g.slug === currentSlug;
+        return (
+          <a
+            class:list={["num", { on: isCurrent }]}
+            href={galleryUrl(g, i)}
+            aria-current={isCurrent ? "page" : undefined}
+          >
+            <span class="visually-hidden">{galleryName(g)}</span>
+            <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+          </a>
+        );
+      })
+    }
+  </nav>
+
+  <SocialLinks />
+</header>
+
+<style>
+  .top {
+    height: var(--head);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(18px, 3vw, 34px);
+    border-bottom: 1px solid var(--hair);
+    position: relative;
+    z-index: 5;
+  }
+  .mark {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .pager {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 1.6vw, 26px);
+    font-size: 14px;
+  }
+  .num {
+    color: var(--dim);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    padding: 6px 0;
+    position: relative;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .num:hover {
+    color: var(--ink);
+  }
+  .num.on {
+    color: var(--ink);
+  }
+  .num.on::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1.5px;
+    background: var(--ink);
+  }
+  @media (max-width: 620px) {
+    .mark {
+      font-size: 19px;
+    }
+    .pager {
+      gap: 10px;
+      font-size: 13px;
+    }
+  }
+</style>
