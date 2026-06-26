@@ -29,7 +29,7 @@ npm run dev      # http://localhost:4321
 src/
   site.config.ts          # name, social links, SEO defaults — edit this first
   content.config.ts       # schema for the galleries collection
-  content/galleries/      # one Markdown file per gallery (the content)
+  content/galleries/      # one FOLDER per gallery: index.md + its photo files
   lib/
     types.ts              # Gallery / Photo domain types
     content-source.ts     # the content "seam" — swap backends here
@@ -50,8 +50,17 @@ domain before deploying), and the default SEO title/description.
 
 ## Add or edit a gallery
 
-Add a Markdown file to `src/content/galleries/`. The filename becomes the URL
-slug (e.g. `06-iceland.md` → `/galleries/06-iceland`).
+Each gallery is a **folder** in `src/content/galleries/`. The folder name is the
+URL slug (e.g. `06-iceland/` → `/galleries/06-iceland`). Inside it: an `index.md`
+and the gallery's photo files.
+
+```
+src/content/galleries/
+  06-iceland/
+    index.md
+    falls.jpg
+    glacier.jpg
+```
 
 ```markdown
 ---
@@ -60,30 +69,32 @@ location: Iceland # shown in the header/caption
 filmStock: Portra 800 # shown in the header/caption
 intro: Long nights on the ring road. # optional; used for SEO
 photos:
-  - seed: iceland-falls # placeholder image id (any string)
-    width: 1300 # intrinsic width  — keeps layout from shifting
-    height: 860 # intrinsic height
+  - src: ./falls.jpg # path to a file in this folder
     caption: Skógafoss at dusk # optional
     alt: A tall waterfall # optional; falls back to caption / gallery name
+  - src: ./glacier.jpg
 ---
 ```
 
 - The **lowest `order`** gallery is the home page (`/`); the rest get their own routes.
-- `width`/`height` are required so the page reserves space and never jumps.
+- You do **not** specify width/height — Astro reads each image's real dimensions
+  and reserves space automatically (no layout shift).
 - Run `npm run dev` and the new gallery appears in the pager automatically.
 
-## Swapping in real photos
+## Adding your real photos
 
-Today, photos render from picsum via `Photo.astro`. For real images:
+The placeholder `.jpg` files (labelled "PLACEHOLDER") are real image files, so the
+project builds and looks right out of the box. To use your own photos:
 
-1. Drop image files into the repo (e.g. `src/assets/galleries/<gallery>/`).
-2. Reference them in the gallery's `photos` and update `content-source.ts` so
-   `src` points at the local file instead of the picsum placeholder.
-3. Switch `Photo.astro` from `<img>` to astro's `<Image />` (`astro:assets`) to
-   get automatic AVIF/WebP, responsive `srcset`, and build-time optimization.
+1. Drop your exported photos into the gallery's folder (any size — Astro
+   optimizes them to responsive WebP/AVIF at build time).
+2. In that gallery's `index.md`, point each `src:` at your filename and write a
+   `caption:`. Delete the placeholder lines/files you replaced.
+3. Rename folders / edit `location` + `filmStock` to your real trips.
 
-EXIF `date`/`camera` fields already exist on the `Photo` type and can be
-auto-extracted at that point.
+Tip: export a sensible web size from Lightroom/Photos (long edge ~2400px). Astro
+handles compression and format from there. EXIF `date`/`camera` fields exist on
+the schema if you want to surface them later.
 
 ## Deploy to Vercel
 

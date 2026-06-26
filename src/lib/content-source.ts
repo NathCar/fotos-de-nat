@@ -15,11 +15,6 @@ export interface ContentSource {
   getGallery(slug: string): Promise<Gallery | undefined>;
 }
 
-/** Turn a placeholder seed into an image URL. Swap this out for real assets later. */
-function resolvePlaceholder(seed: string, width: number, height: number): string {
-  return `https://picsum.photos/seed/${seed}/${width}/${height}`;
-}
-
 /** Local content source backed by the `galleries` content collection. */
 export const localContentSource: ContentSource = {
   async getGalleries() {
@@ -29,16 +24,15 @@ export const localContentSource: ContentSource = {
         const { order, location, filmStock, intro, photos } = entry.data;
         const name = galleryName({ location, filmStock });
         return {
-          slug: entry.id,
+          // Entry id is "<folder>/index" — the folder name is the slug.
+          slug: entry.id.replace(/\/index$/, ""),
           order,
           location,
           filmStock,
           intro,
           photos: photos.map(
             (p): Photo => ({
-              src: resolvePlaceholder(p.seed, p.width, p.height),
-              width: p.width,
-              height: p.height,
+              src: p.src,
               alt: p.alt ?? p.caption ?? name,
               caption: p.caption,
               date: p.date,

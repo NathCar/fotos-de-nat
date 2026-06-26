@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import type { Photo } from "../lib/types";
 
 interface Props {
@@ -8,36 +9,25 @@ interface Props {
 }
 
 const { photo, priority = false } = Astro.props;
+const { src } = photo;
 
-/**
- * Placeholder images come from picsum.photos. We request WebP and offer a 2×
- * variant for high-DPI screens. When real images move into the repo, replace
- * this component's <img> with astro:assets <Image> for build-time AVIF/WebP.
- */
-function picsumVariant(src: string, scale: number): string {
-  const m = src.match(/^(https:\/\/picsum\.photos\/seed\/[^/]+)\/(\d+)\/(\d+)$/);
-  if (!m) return src;
-  const [, base, w, h] = m;
-  return `${base}/${Number(w) * scale}/${Number(h) * scale}.webp`;
-}
-
-const src1x = picsumVariant(photo.src, 1);
-const src2x = picsumVariant(photo.src, 2);
-const srcset = src1x !== photo.src ? `${src1x} 1x, ${src2x} 2x` : undefined;
+// Responsive widths, capped at the image's real width so we never upscale.
+const widths = [...new Set([480, 800, 1200, 1600, src.width])]
+  .filter((w) => w <= src.width)
+  .sort((a, b) => a - b);
 ---
 
-<img
+<Image
   class="photo"
-  src={src1x}
-  srcset={srcset}
-  width={photo.width}
-  height={photo.height}
+  src={src}
   alt={photo.alt}
-  style={`aspect-ratio:${photo.width}/${photo.height}`}
+  widths={widths}
+  sizes="(max-width: 620px) 86vw, 45vw"
+  style={`aspect-ratio:${src.width}/${src.height}`}
   loading={priority ? "eager" : "lazy"}
   fetchpriority={priority ? "high" : "auto"}
   decoding="async"
-  draggable="false"
+  draggable={false}
 />
 
 <style>
