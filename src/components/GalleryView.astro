@@ -1,0 +1,23 @@
+---
+import SiteHeader from "./SiteHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+import Filmstrip from "./Filmstrip.astro";
+import type { Gallery } from "../lib/types";
+
+interface Props {
+  /** All galleries, sorted — used to render the pager. */
+  galleries: Gallery[];
+  /** The gallery currently on screen. */
+  gallery: Gallery;
+  /** 1-based position of the current gallery. */
+  number: number;
+}
+
+const { galleries, gallery, number } = Astro.props;
+---
+
+<SiteHeader galleries={galleries} currentSlug={gallery.slug} />
+<main>
+  <Filmstrip gallery={gallery} number={number} />
+</main>
+<SiteFooter />

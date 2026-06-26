@@ -1,0 +1,27 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GalleryView from "../../components/GalleryView.astro";
+import { content } from "../../lib/content-source";
+import { galleryName } from "../../lib/types";
+import { SITE } from "../../site.config";
+
+export const getStaticPaths = (async () => {
+  const galleries = await content.getGalleries();
+  // The first gallery lives at "/" — generate routes for the rest only.
+  return galleries.slice(1).map((gallery, i) => ({
+    params: { slug: gallery.slug },
+    props: { gallery, galleries, number: i + 2 },
+  }));
+}) satisfies GetStaticPaths;
+
+const { gallery, galleries, number } = Astro.props;
+const name = galleryName(gallery);
+const title = `${name} — ${SITE.name}`;
+const description = gallery.intro ?? `Film photography from ${gallery.location}.`;
+const ogImage = gallery.photos[0]?.src;
+---
+
+<BaseLayout title={title} description={description} image={ogImage}>
+  <GalleryView galleries={galleries} gallery={gallery} number={number} />
+</BaseLayout>
