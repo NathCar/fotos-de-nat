@@ -7,7 +7,6 @@ photos:
   - src: ./IMG_4033.JPEG
   - src: ./IMG_4034.JPEG
   - src: ./IMG_4035.JPEG
-  - src: ./IMG_4042.JPEG
   - src: ./IMG_4046.JPEG
   - src: ./IMG_4047.JPEG
   - src: ./IMG_4048.JPEG
