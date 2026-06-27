@@ -13,7 +13,6 @@ photos:
   - src: ./IMG_4015.JPEG
   - src: ./IMG_4027.JPEG
   - src: ./IMG_4016.JPEG
-  - src: ./IMG_4017.JPEG
   - src: ./IMG_4019.JPEG
   - src: ./IMG_4021.JPEG
   - src: ./IMG_4028.JPEG
