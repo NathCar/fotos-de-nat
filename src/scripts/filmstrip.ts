@@ -14,7 +14,6 @@ export function initFilmstrip(stage: HTMLElement): void {
   if (!track || !cap) return;
 
   const name = stage.dataset.galleryName ?? "";
-  const number = stage.dataset.galleryNumber ?? "";
   const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Capture the server-rendered slides, then build three copies so the loop is
@@ -45,7 +44,7 @@ export function initFilmstrip(stage: HTMLElement): void {
     track!.style.transform = `translateX(${baseTX}px)`;
 
     const k = ((active % n) + n) % n;
-    cap!.innerHTML = `<b>${number}</b> &nbsp; ${name} &nbsp;·&nbsp; ${k + 1} / ${n}`;
+    cap!.innerHTML = `${name} &nbsp;·&nbsp; ${k + 1} / ${n}`;
 
     if (!animate) void track!.offsetWidth; // reflow so the next move animates
     if (prefersReduced) normalize();
