@@ -46,8 +46,21 @@ export function initFilmstrip(stage: HTMLElement): void {
     const k = ((active % n) + n) % n;
     cap!.innerHTML = `${name} &nbsp;·&nbsp; ${k + 1} / ${n}`;
 
+    prime(active);
     if (!animate) void track!.offsetWidth; // reflow so the next move animates
     if (prefersReduced) normalize();
+  }
+
+  // Decode the active slide and its immediate neighbours ahead of time. On
+  // mobile a single ~1200px photo costs hundreds of ms to decode; doing it
+  // lazily at navigation time is what makes the first view of each photo lag.
+  function prime(center: number): void {
+    for (let d = -2; d <= 2; d++) {
+      const img = slides[center + d]?.querySelector("img");
+      if (!img) continue;
+      if (img.loading === "lazy") img.loading = "eager"; // force the fetch too
+      img.decode?.().catch(() => {});
+    }
   }
 
   function normalize(): void {
