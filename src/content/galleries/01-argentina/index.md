@@ -2,6 +2,7 @@
 order: 1
 location: Argentina
 intro: Photographs from Argentina.
+cover: 8
 # filmStock: "Portra 400"   # uncomment + set if you want a film stock in the caption
 photos:
   - src: ./IMG_3044.JPEG
