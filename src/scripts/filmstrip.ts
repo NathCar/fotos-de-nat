@@ -34,7 +34,12 @@ export function initFilmstrip(stage: HTMLElement): void {
   prevBtn?.removeAttribute("hidden");
   nextBtn?.removeAttribute("hidden");
 
-  let active = n + Math.floor(Math.random() * n); // start in the middle copy
+  // Open on the gallery's cover photo (1-based) if set, else a random photo.
+  const cover = Number(stage.dataset.cover);
+  let active =
+    Number.isInteger(cover) && cover >= 1 && cover <= n
+      ? n + (cover - 1)
+      : n + Math.floor(Math.random() * n);
   let baseTX = 0;
 
   function place(animate: boolean): void {

@@ -24,6 +24,8 @@ export interface Gallery {
   filmStock?: string;
   /** Optional short intro for the gallery (SEO + future use). */
   intro?: string;
+  /** 1-based index of the photo to open on; falls back to random when unset. */
+  cover?: number;
   photos: Photo[];
 }
 

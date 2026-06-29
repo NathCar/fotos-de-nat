@@ -21,7 +21,7 @@ export const localContentSource: ContentSource = {
     const entries = await getCollection("galleries");
     return entries
       .map((entry): Gallery => {
-        const { order, location, filmStock, intro, photos } = entry.data;
+        const { order, location, filmStock, intro, cover, photos } = entry.data;
         const name = galleryName({ location, filmStock });
         return {
           // Entry id is "<folder>/index" — the folder name is the slug.
@@ -30,6 +30,7 @@ export const localContentSource: ContentSource = {
           location,
           filmStock,
           intro,
+          cover,
           photos: photos.map(
             (p): Photo => ({
               src: p.src,
