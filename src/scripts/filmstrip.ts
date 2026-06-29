@@ -36,12 +36,15 @@ export function initFilmstrip(stage: HTMLElement): void {
 
   let active = n + Math.floor(Math.random() * n); // start in the middle copy
   let baseTX = 0;
+  let animating = false; // true while an animated move is in flight
 
   function place(animate: boolean): void {
-    track!.style.transition = animate && !prefersReduced ? "" : "none";
+    const willAnimate = animate && !prefersReduced;
+    track!.style.transition = willAnimate ? "" : "none";
     const s = slides[active];
     baseTX = stage.clientWidth / 2 - (s.offsetLeft + s.offsetWidth / 2);
     track!.style.transform = `translateX(${baseTX}px)`;
+    if (willAnimate) animating = true;
 
     const k = ((active % n) + n) % n;
     cap!.innerHTML = `${name} &nbsp;·&nbsp; ${k + 1} / ${n}`;
@@ -49,6 +52,13 @@ export function initFilmstrip(stage: HTMLElement): void {
     prime(active);
     if (!animate) void track!.offsetWidth; // reflow so the next move animates
     if (prefersReduced) normalize();
+  }
+
+  // A non-animated re-center (image load, resize) must never run mid-move: it
+  // sets transition:none, which snaps the in-flight transform to its end and
+  // makes the photo "pop" instead of sliding. Defer until the move settles.
+  function recenter(): void {
+    if (!animating) place(false);
   }
 
   // Decode the active slide and its immediate neighbours ahead of time. On
@@ -83,13 +93,16 @@ export function initFilmstrip(stage: HTMLElement): void {
   slides.forEach((s) => {
     const img = s.querySelector("img");
     if (img && !img.complete) {
-      img.addEventListener("load", () => place(false), { once: true });
+      img.addEventListener("load", () => recenter(), { once: true });
     }
   });
 
-  // After an animated move, if we've drifted off the middle copy, snap back.
+  // After an animated move ends, clear the flag, then snap back if we've
+  // drifted off the middle copy.
   track.addEventListener("transitionend", (e) => {
-    if (e.propertyName === "transform") normalize();
+    if (e.propertyName !== "transform") return;
+    animating = false;
+    normalize();
   });
 
   prevBtn?.addEventListener("click", () => shift(-1));
@@ -106,7 +119,7 @@ export function initFilmstrip(stage: HTMLElement): void {
   });
   stage.tabIndex = 0; // make the strip focusable so keys reach it
 
-  addEventListener("resize", () => place(false));
+  addEventListener("resize", () => recenter());
 
   // Drag / swipe — stays within the gallery.
   let down = false;
