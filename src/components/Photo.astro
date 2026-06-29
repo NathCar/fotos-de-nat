@@ -12,9 +12,17 @@ const { photo, priority = false } = Astro.props;
 const { src } = photo;
 
 // Responsive widths, capped at the image's real width so we never upscale.
-const widths = [...new Set([480, 800, 1200, 1600, src.width])]
+const widths = [...new Set([480, 800, 1200, 1600, 2048, src.width])]
   .filter((w) => w <= src.width)
   .sort((a, b) => a - b);
+
+// The filmstrip sizes photos by HEIGHT (.photo is height:100% of a slide that
+// is 92% of the stage = 100dvh - --head[72px]); width then follows the aspect
+// ratio. A viewport-width `sizes` (e.g. 45vw) badly under-reports the real
+// width of landscape photos, so the browser picks a too-small file and upscales
+// them. Describe the true height-driven width instead. 100vh (>= 100dvh) biases
+// slightly large, i.e. toward sharper. Keep in sync with --head in global.css.
+const displayWidth = `calc((100vh - 72px) * ${(0.92 * (src.width / src.height)).toFixed(4)})`;
 ---
 
 <Image
@@ -22,7 +30,7 @@ const widths = [...new Set([480, 800, 1200, 1600, src.width])]
   src={src}
   alt={photo.alt}
   widths={widths}
-  sizes="(max-width: 620px) 86vw, 45vw"
+  sizes={displayWidth}
   style={`aspect-ratio:${src.width}/${src.height}`}
   loading={priority ? "eager" : "lazy"}
   fetchpriority={priority ? "high" : "auto"}
