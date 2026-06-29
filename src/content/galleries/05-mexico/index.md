@@ -2,6 +2,7 @@
 order: 5
 location: Mexico
 intro: Photographs from Mexico.
+cover: 12
 # filmStock: "Portra 400"   # uncomment + set if you want a film stock in the caption
 photos:
   - src: ./IMG_3991.JPEG

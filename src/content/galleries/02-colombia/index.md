@@ -2,6 +2,7 @@
 order: 2
 location: Colombia
 intro: Photographs from Colombia.
+cover: 11
 # filmStock: "Portra 400"   # uncomment + set if you want a film stock in the caption
 photos:
   - src: ./IMG_3070.JPEG
