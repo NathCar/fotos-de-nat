@@ -1,11 +1,10 @@
 ---
 import Photo from "./Photo.astro";
 import type { Gallery } from "../lib/types";
-import { galleryName } from "../lib/types";
+import { galleryName } from "../lib/gallery-name";
 
 interface Props {
   gallery: Gallery;
-  /** 1-based position shown in the caption (e.g. "01"). */
   number: number;
 }
 
@@ -61,7 +60,7 @@ const label = String(number).padStart(2, "0");
     align-items: flex-start;
   }
 
-  /* No-JS / pre-hydration baseline: a horizontally scrollable strip. */
+  /* No-JS fallback: a native scroll strip. */
   .track {
     list-style: none;
     display: flex;
@@ -81,7 +80,7 @@ const label = String(number).padStart(2, "0");
     scroll-snap-align: center;
   }
 
-  /* JS-enhanced mode: the script sets [data-enhanced] and drives transforms. */
+  /* Set by filmstrip.ts once enhanced. */
   .stage[data-enhanced] .track {
     width: auto;
     overflow: visible;
