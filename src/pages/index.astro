@@ -1,23 +1,22 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import GalleryView from "../components/GalleryView.astro";
-import { content } from "../lib/content-source";
+import { getGalleries } from "../lib/content-source";
+import { ogImage } from "../lib/og-image";
 import { SITE } from "../site.config";
 
-const galleries = await content.getGalleries();
+const galleries = await getGalleries();
 const first = galleries[0];
 
 if (!first) {
-  throw new Error(
-    "No galleries found. Add a Markdown file under src/content/galleries/.",
-  );
+  throw new Error("No galleries found. Add a YAML file under src/content/galleries/.");
 }
-
-const title = `${SITE.name} — Film Photography`;
-const description = first.intro ?? SITE.description;
-const ogImage = first.photos[0]?.src.src;
 ---
 
-<BaseLayout title={title} description={description} image={ogImage}>
+<BaseLayout
+  title={`${SITE.name} — Film Photography`}
+  description={first.intro ?? SITE.description}
+  image={ogImage(first)}
+>
   <GalleryView galleries={galleries} gallery={first} number={1} />
 </BaseLayout>

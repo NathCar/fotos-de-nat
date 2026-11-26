@@ -1,0 +1,49 @@
+{
+  "redirects": [
+    {
+      "source": "/galleries/01-argentina",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/galleries/02-colombia",
+      "destination": "/galleries/colombia",
+      "permanent": true
+    },
+    {
+      "source": "/galleries/03-nicaragua",
+      "destination": "/galleries/nicaragua",
+      "permanent": true
+    },
+    {
+      "source": "/galleries/04-black-and-white",
+      "destination": "/galleries/black-and-white",
+      "permanent": true
+    },
+    {
+      "source": "/galleries/05-mexico",
+      "destination": "/galleries/mexico",
+      "permanent": true
+    },
+    {
+      "source": "/galleries/06-greece",
+      "destination": "/galleries/greece",
+      "permanent": true
+    },
+    {
+      "source": "/galleries/07-le-sud",
+      "destination": "/galleries/le-sud",
+      "permanent": true
+    },
+    {
+      "source": "/galleries/08-vietnam",
+      "destination": "/galleries/vietnam",
+      "permanent": true
+    },
+    {
+      "source": "/galleries/09-the-uk",
+      "destination": "/galleries/the-uk",
+      "permanent": true
+    }
+  ]
+}
