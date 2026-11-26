@@ -121,20 +121,37 @@ creates public, full-size assets, and the build refuses them.
 ### 2. Add the config file
 
 Create `src/content/galleries/japan.yaml`. The filename must match the slug you
-uploaded to:
+uploaded to.
+
+Only `number` and `title` are required. This is a complete, working gallery:
 
 ```yaml
 number: 10
 title: Japan
-intro: Two weeks in Tokyo and Kyoto.
-template: carousel
-cover: IMG_1240
-photos:
+```
+
+It shows every photo in the `japan` folder with the carousel, in random order.
+
+Add optional fields to control more:
+
+```yaml
+# Required
+number: 10 # position in the header; must be unique
+title: Japan # shown under the photos and in the page title
+
+# Optional
+intro: Two weeks in Tokyo and Kyoto. # description for search engines and link previews
+template: carousel # layout; defaults to carousel
+cover: IMG_1240 # photo to open on; defaults to a random one
+photos: # which photos, in order; defaults to all, shuffled
   - IMG_1234
   - IMG_1240
-  - id: IMG_1251
+  - id: IMG_1251 # longer form, to add alt text
     alt: A narrow street in Kyoto at dusk
 ```
+
+See the [config reference](#gallery-config-reference) for every field, including
+what happens when it's left out.
 
 ### 3. Publish
 
@@ -153,19 +170,40 @@ header.
 
 ## Gallery config reference
 
-| Field       | Required | Meaning                                                                                                                                                                         |
-| ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `number`    | yes      | Position in the header. Must be unique. The lowest number is the home page.                                                                                                     |
-| `title`     | yes      | Shown under the photos and in the page title.                                                                                                                                   |
-| `filmStock` | no       | Added after the title, e.g. "Japan · Portra 400".                                                                                                                               |
-| `intro`     | no       | Page description for search engines and link previews.                                                                                                                          |
-| `template`  | no       | How the photos are shown. Defaults to `carousel`. See [Add a new template](#add-a-new-template).                                                                                |
-| `folder`    | no       | The Cloudinary folder, if it differs from the filename.                                                                                                                         |
-| `cover`     | no       | The photo the gallery opens on, and the image used in link previews. Without it the gallery opens on a random photo.                                                            |
-| `photos`    | no       | Photos in display order. Each is a photo name, or `{ id, alt }` to set alt text. Without a list, every photo in the folder is shown in random order, reshuffled on each deploy. |
+### Required
+
+| Field    | Meaning                                                                     |
+| -------- | --------------------------------------------------------------------------- |
+| `number` | Position in the header. Must be unique. The lowest number is the home page. |
+| `title`  | Shown under the photos and in the page title.                               |
+
+### Optional
+
+| Field       | Meaning                                                                     | If left out                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `intro`     | Page description for search engines and link previews.                      | "Film Photography from Japan.", built from the site `tagline` and title. The home page uses the site `description` instead. |
+| `template`  | How the photos are laid out. See [Add a new template](#add-a-new-template). | `carousel`                                                                                                                  |
+| `cover`     | The photo the gallery opens on, also used in link previews.                 | Opens on a random photo; link previews use the first photo                                                                  |
+| `photos`    | Which photos to show, in this order.                                        | Every photo in the folder, in random order, reshuffled on each deploy                                                       |
+| `folder`    | The Cloudinary folder to read photos from.                                  | The filename without `.yaml`                                                                                                |
+| `filmStock` | Shown after the title, e.g. "Japan · Portra 400".                           | Only the title is shown                                                                                                     |
+
+### Photo entries
+
+Each item in `photos` is either:
+
+- **a photo name**, e.g. `- IMG_1234`: the uploaded filename without its extension;
+- **or an object**, to add alt text:
+
+  ```yaml
+  - id: IMG_1251 # required: the photo name
+    alt: A narrow street in Kyoto at dusk # optional
+  ```
 
 Alt text describes the photo for screen readers. Photos without `alt` use the
 gallery title.
+
+### Errors
 
 The build stops with a clear error if:
 
