@@ -1,11 +1,10 @@
 # fotos de nat
 
-A minimal photography portfolio: numbered galleries of photos, each shown with a
-layout template (today, a looping, draggable horizontal carousel). It's a static
-[Astro](https://astro.build) site deployed on [Vercel](https://vercel.com).
+A photography website: numbered galleries of photos, each shown with a
+layout template. It's a static [Astro](https://astro.build) site deployed on [Vercel](https://vercel.com).
 
 Photos aren't stored in this repo. They live in [Cloudinary](https://cloudinary.com)
-as protected 2000px copies, and each gallery is a short YAML file.
+as protected 2000px copies, and each gallery is a short YAML config file.
 
 - **Live site:** [fotosdenat.com](https://fotosdenat.com)
 - **Stack:** Astro 5, TypeScript, Cloudinary, Vercel
@@ -27,7 +26,7 @@ free [Vercel](https://vercel.com) account.
 
 ### 1. Get the code
 
-Fork or clone the repo, then install:
+Clone the repo, then install:
 
 ```bash
 git clone https://github.com/<you>/<your-repo>.git
@@ -47,8 +46,8 @@ npm install
 
    ```
    CLOUDINARY_CLOUD_NAME=your-cloud-name
-   CLOUDINARY_API_KEY=123456789012345
-   CLOUDINARY_API_SECRET=your-secret
+   CLOUDINARY_API_KEY=your-api-key
+   CLOUDINARY_API_SECRET=your-api-secret
    ```
 
    `.env` is gitignored. The values are only read at build time and never reach the
@@ -73,8 +72,8 @@ and don't apply to yours. Keep `"trailingSlash": false`.
 
 ### 4. Replace the galleries
 
-Delete the example galleries in `src/content/galleries/`. They point at photos in
-my Cloudinary account, so they won't build with yours. Then add your own; see
+Replace the galleries in `src/content/galleries/` with your config files. These point at photos in
+my Cloudinary account, so they won't build with yours. To add your own see
 [Add or change a gallery](#add-or-change-a-gallery).
 
 Check it locally:
@@ -127,7 +126,6 @@ uploaded to:
 ```yaml
 number: 10
 title: Japan
-filmStock: Portra 400
 intro: Two weeks in Tokyo and Kyoto.
 template: carousel
 cover: IMG_1240
