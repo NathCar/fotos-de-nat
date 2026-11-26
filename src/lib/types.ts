@@ -7,7 +7,6 @@ export interface Photo {
   width: number;
   height: number;
   alt: string;
-  caption?: string;
 }
 
 export interface Gallery {

@@ -4,7 +4,6 @@
   --dim: #9a978f;
   --hair: #e6e4df;
   --head: 72px;
-  --cw: clamp(300px, 82vw, 1180px);
   --font-body: "Hanken Grotesk", system-ui, sans-serif;
 }
 

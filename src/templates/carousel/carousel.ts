@@ -1,4 +1,4 @@
-export function initFilmstrip(stage: HTMLElement): void {
+export function initCarousel(stage: HTMLElement): void {
   const track = stage.querySelector<HTMLElement>("[data-track]");
   const cap = stage.querySelector<HTMLElement>("[data-cap]");
   const prevBtn = stage.querySelector<HTMLButtonElement>("[data-prev]");
