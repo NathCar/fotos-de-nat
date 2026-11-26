@@ -1,9 +1,6 @@
 import type { Gallery } from "./types";
 
-/**
- * URL for a gallery. The first gallery (index 0) lives at the site root to
- * avoid duplicate content; the rest get their own /galleries/<slug> route.
- */
+/** The first gallery lives at the site root to avoid duplicate content. */
 export function galleryUrl(gallery: Gallery, index: number): string {
   return index === 0 ? "/" : `/galleries/${gallery.slug}`;
 }

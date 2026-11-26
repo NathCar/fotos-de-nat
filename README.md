@@ -15,13 +15,13 @@ npm install
 npm run dev      # http://localhost:4321
 ```
 
-| Command            | Does                                                  |
-| ------------------ | ----------------------------------------------------- |
-| `npm run dev`      | Start the dev server with hot reload                  |
-| `npm run build`    | Type-check (`astro check`) then build to `dist/`      |
-| `npm run preview`  | Serve the production build locally                    |
-| `npm run format`   | Format the codebase with Prettier                     |
-| `npm run check`    | Type-check / diagnostics only                         |
+| Command           | Does                                             |
+| ----------------- | ------------------------------------------------ |
+| `npm run dev`     | Start the dev server with hot reload             |
+| `npm run build`   | Type-check (`astro check`) then build to `dist/` |
+| `npm run preview` | Serve the production build locally               |
+| `npm run format`  | Format the codebase with Prettier                |
+| `npm run check`   | Type-check / diagnostics only                    |
 
 ## Project structure
 

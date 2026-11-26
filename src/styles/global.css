@@ -52,7 +52,6 @@ a {
   outline-offset: 3px;
 }
 
-/* Visually hidden but available to assistive tech. */
 .visually-hidden {
   position: absolute;
   width: 1px;
