@@ -3,12 +3,11 @@ import type { GetStaticPaths } from "astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import GalleryView from "../../components/GalleryView.astro";
 import { content } from "../../lib/content-source";
-import { galleryName } from "../../lib/types";
+import { galleryName } from "../../lib/gallery-name";
 import { SITE } from "../../site.config";
 
 export const getStaticPaths = (async () => {
   const galleries = await content.getGalleries();
-  // The first gallery lives at "/" — generate routes for the rest only.
   return galleries.slice(1).map((gallery, i) => ({
     params: { slug: gallery.slug },
     props: { gallery, galleries, number: i + 2 },
