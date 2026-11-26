@@ -40,8 +40,11 @@ They are only read at build time and never reach the browser.
    npm run upload -- japan ~/Pictures/export/japan
    ```
 
-   This puts them in a Cloudinary folder called `japan`, as protected assets.
-   Re-running it skips photos that are already there.
+   This resizes each photo to at most 2000px on the long edge, strips its metadata,
+   and uploads the copy to a Cloudinary folder called `japan` as a protected asset.
+   Your full-resolution files never leave your computer, so keep them in your own
+   archive. Re-running skips photos that are already there; add `--replace` to
+   overwrite them, e.g. after re-editing.
 
 2. Add `src/content/galleries/japan.yaml`. The filename is the URL (`/galleries/japan`).
 
@@ -96,12 +99,12 @@ Any gallery can then use `template: vertical`.
 
 ## Photo protection
 
-Nothing a browser can display is fully safe from a screenshot, but no usable original
-leaves Cloudinary:
+Nothing a browser can display is fully safe from a screenshot, but no full-resolution
+file is ever online:
 
+- Only 2000px copies are uploaded. The originals stay on your computer.
 - Photos are stored as **authenticated** assets, so only signed URLs generated at
-  build time work. Nobody can edit a URL to get a bigger version or the original.
-- The largest size served is 2000px on the long edge.
+  build time work. Nobody can edit a URL to get a different size.
 - Right-click, drag and long-press save are disabled on photos.
 
 ## Project structure
@@ -117,7 +120,7 @@ src/
   templates/               # one folder per template, plus the registry
   components/              # BaseHead, SiteHeader, Photo, GalleryView, …
   pages/                   # "/" is the first gallery; the rest are /galleries/<slug>
-scripts/upload-photos.mjs  # uploads a folder as authenticated assets
+scripts/upload-photos.mjs  # resizes to 2000px, uploads as authenticated assets
 ```
 
 ## Deploy
