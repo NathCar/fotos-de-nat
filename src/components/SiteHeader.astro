@@ -1,6 +1,5 @@
 ---
 import { SITE } from "../site.config";
-import SocialLinks from "./SocialLinks.astro";
 import { galleryUrl } from "../lib/routes";
 import type { Gallery } from "../lib/types";
 import { galleryName } from "../lib/gallery-name";
@@ -33,8 +32,6 @@ const { galleries, currentSlug } = Astro.props;
       })
     }
   </nav>
-
-  <SocialLinks />
 </header>
 
 <style>
@@ -47,6 +44,10 @@ const { galleries, currentSlug } = Astro.props;
     border-bottom: 1px solid var(--hair);
     position: relative;
     z-index: 5;
+  }
+  /* Empty third flex item so space-between centres the pager on wide screens. */
+  .top::after {
+    content: "";
   }
   .mark {
     font-size: 24px;
@@ -85,6 +86,9 @@ const { galleries, currentSlug } = Astro.props;
     background: var(--ink);
   }
   @media (max-width: 620px) {
+    .top::after {
+      display: none;
+    }
     .mark {
       font-size: 19px;
     }

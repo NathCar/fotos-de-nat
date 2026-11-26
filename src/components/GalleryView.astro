@@ -7,15 +7,14 @@ import type { Gallery } from "../lib/types";
 interface Props {
   galleries: Gallery[];
   gallery: Gallery;
-  number: number;
 }
 
-const { galleries, gallery, number } = Astro.props;
+const { galleries, gallery } = Astro.props;
 const Template = TEMPLATES[gallery.template];
 ---
 
 <SiteHeader galleries={galleries} currentSlug={gallery.slug} />
 <main>
-  <Template gallery={gallery} number={number} />
+  <Template gallery={gallery} />
 </main>
 <SiteFooter />
