@@ -8,12 +8,13 @@ interface Props {
 }
 
 const {
-  title = SITE.title,
+  title = `${SITE.name} — ${SITE.tagline}`,
   description = SITE.description,
   image,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const path = Astro.url.pathname.replace(/(.)\/$/, "$1");
+const canonical = new URL(path, Astro.site ?? Astro.url);
 const ogImage = image ? new URL(image, canonical) : undefined;
 ---
 
@@ -33,7 +34,10 @@ const ogImage = image ? new URL(image, canonical) : undefined;
 <meta property="og:url" content={canonical.href} />
 {ogImage && <meta property="og:image" content={ogImage.href} />}
 
-<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+<meta
+  name="twitter:card"
+  content={ogImage ? "summary_large_image" : "summary"}
+/>
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 {ogImage && <meta name="twitter:image" content={ogImage.href} />}

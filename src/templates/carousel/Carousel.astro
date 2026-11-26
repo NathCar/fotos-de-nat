@@ -5,19 +5,20 @@ import { galleryName } from "../../lib/gallery-name";
 
 interface Props {
   gallery: Gallery;
-  number: number;
 }
 
-const { gallery, number } = Astro.props;
+const { gallery } = Astro.props;
 const name = galleryName(gallery);
-const label = String(number).padStart(2, "0");
+
+// Photos are sized by height, so derive width from aspect ratio. Keep 72px in sync with --head.
+const heightSized = (p: { width: number; height: number }) =>
+  `calc((100vh - 72px) * ${(0.92 * (p.width / p.height)).toFixed(4)})`;
 ---
 
 <section
   class="stage"
-  data-filmstrip
+  data-carousel
   data-gallery-name={name}
-  data-gallery-number={label}
   data-cover={gallery.cover}
   aria-roledescription="carousel"
   aria-label={`${name} gallery`}
@@ -26,17 +27,38 @@ const label = String(number).padStart(2, "0");
     {
       gallery.photos.map((photo, i) => (
         <li class="slide">
-          <Photo photo={photo} priority={i === 0} />
+          <Photo
+            photo={photo}
+            priority={i === 0}
+            sizes={heightSized(photo)}
+            class="slide-photo"
+          />
         </li>
       ))
     }
   </ul>
 
-  <button class="arrow prev" type="button" data-prev aria-label="Previous photo" hidden>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"></path></svg>
+  <button
+    class="arrow prev"
+    type="button"
+    data-prev
+    aria-label="Previous photo"
+    hidden
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true"
+      ><path d="m15 5-7 7 7 7"></path></svg
+    >
   </button>
-  <button class="arrow next" type="button" data-next aria-label="Next photo" hidden>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>
+  <button
+    class="arrow next"
+    type="button"
+    data-next
+    aria-label="Next photo"
+    hidden
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true"
+      ><path d="m9 5 7 7-7 7"></path></svg
+    >
   </button>
 
   <p class="cap" data-cap aria-live="polite">
@@ -45,10 +67,10 @@ const label = String(number).padStart(2, "0");
 </section>
 
 <script>
-  import { initFilmstrip } from "./carousel";
+  import { initCarousel } from "./carousel";
   document
-    .querySelectorAll<HTMLElement>("[data-filmstrip]")
-    .forEach((el) => initFilmstrip(el));
+    .querySelectorAll<HTMLElement>("[data-carousel]")
+    .forEach((el) => initCarousel(el));
 </script>
 
 <style>
@@ -78,6 +100,13 @@ const label = String(number).padStart(2, "0");
     position: relative;
     background: #f0eee9;
     scroll-snap-align: center;
+  }
+
+  .slide :global(.slide-photo) {
+    height: 100%;
+    width: auto;
+    max-width: none;
+    object-fit: cover;
   }
 
   /* Set by carousel.ts once enhanced. */
@@ -143,11 +172,6 @@ const label = String(number).padStart(2, "0");
     color: var(--dim);
     letter-spacing: 0.03em;
     pointer-events: none;
-  }
-  .cap b {
-    color: var(--ink);
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
   }
 
   @media (max-width: 620px) {

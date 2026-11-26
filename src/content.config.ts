@@ -6,7 +6,6 @@ const photoRef = z.union([
   z.string(),
   z.object({
     id: z.string(),
-    caption: z.string().optional(),
     alt: z.string().optional(),
   }),
 ]);

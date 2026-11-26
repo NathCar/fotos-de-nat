@@ -9,14 +9,16 @@ const galleries = await getGalleries();
 const first = galleries[0];
 
 if (!first) {
-  throw new Error("No galleries found. Add a YAML file under src/content/galleries/.");
+  throw new Error(
+    "No galleries found. Add a YAML file under src/content/galleries/.",
+  );
 }
 ---
 
 <BaseLayout
-  title={`${SITE.name} — Film Photography`}
+  title={`${SITE.name} — ${SITE.tagline}`}
   description={first.intro ?? SITE.description}
   image={ogImage(first)}
 >
-  <GalleryView galleries={galleries} gallery={first} number={1} />
+  <GalleryView galleries={galleries} gallery={first} />
 </BaseLayout>
