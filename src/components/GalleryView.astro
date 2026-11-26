@@ -1,7 +1,7 @@
 ---
 import SiteHeader from "./SiteHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
-import Filmstrip from "./Filmstrip.astro";
+import { TEMPLATES } from "../templates";
 import type { Gallery } from "../lib/types";
 
 interface Props {
@@ -11,10 +11,11 @@ interface Props {
 }
 
 const { galleries, gallery, number } = Astro.props;
+const Template = TEMPLATES[gallery.template];
 ---
 
 <SiteHeader galleries={galleries} currentSlug={gallery.slug} />
 <main>
-  <Filmstrip gallery={gallery} number={number} />
+  <Template gallery={gallery} number={number} />
 </main>
 <SiteFooter />

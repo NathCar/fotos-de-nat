@@ -1,7 +1,5 @@
 import type { Gallery } from "./types";
 
-export function galleryName(
-  g: Pick<Gallery, "location" | "filmStock">,
-): string {
-  return g.filmStock ? `${g.location} · ${g.filmStock}` : g.location;
+export function galleryName(g: Pick<Gallery, "title" | "filmStock">): string {
+  return g.filmStock ? `${g.title} · ${g.filmStock}` : g.title;
 }

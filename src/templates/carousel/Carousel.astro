@@ -1,7 +1,7 @@
 ---
-import Photo from "./Photo.astro";
-import type { Gallery } from "../lib/types";
-import { galleryName } from "../lib/gallery-name";
+import Photo from "../../components/Photo.astro";
+import type { Gallery } from "../../lib/types";
+import { galleryName } from "../../lib/gallery-name";
 
 interface Props {
   gallery: Gallery;
@@ -45,7 +45,7 @@ const label = String(number).padStart(2, "0");
 </section>
 
 <script>
-  import { initFilmstrip } from "../scripts/filmstrip";
+  import { initFilmstrip } from "./carousel";
   document
     .querySelectorAll<HTMLElement>("[data-filmstrip]")
     .forEach((el) => initFilmstrip(el));
@@ -80,7 +80,7 @@ const label = String(number).padStart(2, "0");
     scroll-snap-align: center;
   }
 
-  /* Set by filmstrip.ts once enhanced. */
+  /* Set by carousel.ts once enhanced. */
   .stage[data-enhanced] .track {
     width: auto;
     overflow: visible;

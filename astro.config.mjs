@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import { SITE } from "./src/site.config";
 
 export default defineConfig({
@@ -7,5 +7,21 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "viewport",
+  },
+  env: {
+    schema: {
+      CLOUDINARY_CLOUD_NAME: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      CLOUDINARY_API_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      CLOUDINARY_API_SECRET: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+    },
   },
 });
