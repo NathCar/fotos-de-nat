@@ -1,11 +1,3 @@
-/**
- * Progressive enhancement for the filmstrip.
- *
- * Server-rendered markup is a single, natively-scrollable row of photos. This
- * upgrades it into the centered, seamlessly-looping, draggable strip from the
- * original design — navigation loops WITHIN the gallery; switching galleries is
- * page navigation handled by the pager links.
- */
 export function initFilmstrip(stage: HTMLElement): void {
   const track = stage.querySelector<HTMLElement>("[data-track]");
   const cap = stage.querySelector<HTMLElement>("[data-cap]");
@@ -16,8 +8,7 @@ export function initFilmstrip(stage: HTMLElement): void {
   const name = stage.dataset.galleryName ?? "";
   const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Capture the server-rendered slides, then build three copies so the loop is
-  // seamless and the edges always peek.
+  // Three copies so the loop is seamless and the edges always peek.
   const originals = Array.from(track.children) as HTMLElement[];
   const n = originals.length;
   if (n === 0) return;
@@ -34,14 +25,13 @@ export function initFilmstrip(stage: HTMLElement): void {
   prevBtn?.removeAttribute("hidden");
   nextBtn?.removeAttribute("hidden");
 
-  // Open on the gallery's cover photo (1-based) if set, else a random photo.
   const cover = Number(stage.dataset.cover);
   let active =
     Number.isInteger(cover) && cover >= 1 && cover <= n
       ? n + (cover - 1)
       : n + Math.floor(Math.random() * n);
   let baseTX = 0;
-  let animating = false; // true while an animated move is in flight
+  let animating = false;
 
   function place(animate: boolean): void {
     const willAnimate = animate && !prefersReduced;
@@ -59,21 +49,17 @@ export function initFilmstrip(stage: HTMLElement): void {
     if (prefersReduced) normalize();
   }
 
-  // A non-animated re-center (image load, resize) must never run mid-move: it
-  // sets transition:none, which snaps the in-flight transform to its end and
-  // makes the photo "pop" instead of sliding. Defer until the move settles.
+  // Re-centering mid-move sets transition:none and pops the animation, so defer.
   function recenter(): void {
     if (!animating) place(false);
   }
 
-  // Decode the active slide and its immediate neighbours ahead of time. On
-  // mobile a single ~1200px photo costs hundreds of ms to decode; doing it
-  // lazily at navigation time is what makes the first view of each photo lag.
+  // Decode neighbours early; lazy decoding on mobile makes each first view lag.
   function prime(center: number): void {
     for (let d = -2; d <= 2; d++) {
       const img = slides[center + d]?.querySelector("img");
       if (!img) continue;
-      if (img.loading === "lazy") img.loading = "eager"; // force the fetch too
+      if (img.loading === "lazy") img.loading = "eager";
       img.decode?.().catch(() => {});
     }
   }
@@ -94,7 +80,6 @@ export function initFilmstrip(stage: HTMLElement): void {
     place(true);
   }
 
-  // Re-center once each image reports its real size.
   slides.forEach((s) => {
     const img = s.querySelector("img");
     if (img && !img.complete) {
@@ -102,8 +87,6 @@ export function initFilmstrip(stage: HTMLElement): void {
     }
   });
 
-  // After an animated move ends, clear the flag, then snap back if we've
-  // drifted off the middle copy.
   track.addEventListener("transitionend", (e) => {
     if (e.propertyName !== "transform") return;
     animating = false;
@@ -122,11 +105,10 @@ export function initFilmstrip(stage: HTMLElement): void {
       shift(1);
     }
   });
-  stage.tabIndex = 0; // make the strip focusable so keys reach it
+  stage.tabIndex = 0;
 
   addEventListener("resize", () => recenter());
 
-  // Drag / swipe — stays within the gallery.
   let down = false;
   let startX = 0;
   let dx = 0;
@@ -158,7 +140,6 @@ export function initFilmstrip(stage: HTMLElement): void {
   track.addEventListener("pointerup", release);
   track.addEventListener("pointercancel", release);
 
-  // Click a peeking slide to bring it to center (ignored right after a drag).
   slides.forEach((s, i) => {
     s.addEventListener("click", () => {
       if (!moved) goTo(i);

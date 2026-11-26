@@ -5,11 +5,8 @@ import Filmstrip from "./Filmstrip.astro";
 import type { Gallery } from "../lib/types";
 
 interface Props {
-  /** All galleries, sorted — used to render the pager. */
   galleries: Gallery[];
-  /** The gallery currently on screen. */
   gallery: Gallery;
-  /** 1-based position of the current gallery. */
   number: number;
 }
 
