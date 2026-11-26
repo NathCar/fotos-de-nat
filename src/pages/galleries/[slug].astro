@@ -9,19 +9,19 @@ import { SITE } from "../../site.config";
 
 export const getStaticPaths = (async () => {
   const galleries = await getGalleries();
-  return galleries.slice(1).map((gallery, i) => ({
+  return galleries.slice(1).map((gallery) => ({
     params: { slug: gallery.slug },
-    props: { gallery, galleries, number: i + 2 },
+    props: { gallery, galleries },
   }));
 }) satisfies GetStaticPaths;
 
-const { gallery, galleries, number } = Astro.props;
+const { gallery, galleries } = Astro.props;
 ---
 
 <BaseLayout
   title={`${galleryName(gallery)} — ${SITE.name}`}
-  description={gallery.intro ?? `Film photography from ${gallery.title}.`}
+  description={gallery.intro ?? `${SITE.tagline} from ${gallery.title}.`}
   image={ogImage(gallery)}
 >
-  <GalleryView galleries={galleries} gallery={gallery} number={number} />
+  <GalleryView galleries={galleries} gallery={gallery} />
 </BaseLayout>

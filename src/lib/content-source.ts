@@ -32,18 +32,13 @@ async function resolvePhotos(entry: Entry): Promise<Photo[]> {
     );
   }
   const fallbackAlt = galleryName({ title, filmStock });
-  const toPhoto = (
-    a: CloudinaryAsset,
-    caption?: string,
-    alt?: string,
-  ): Photo => ({
+  const toPhoto = (a: CloudinaryAsset, alt?: string): Photo => ({
     publicId: a.publicId,
     name: a.name,
     version: a.version,
     width: a.width,
     height: a.height,
-    caption,
-    alt: alt ?? caption ?? fallbackAlt,
+    alt: alt ?? fallbackAlt,
   });
 
   if (!refs) return shuffle(assets).map((a) => toPhoto(a));
@@ -57,7 +52,7 @@ async function resolvePhotos(entry: Entry): Promise<Photo[]> {
         `Gallery "${entry.id}": photo "${r.id}" is not in Cloudinary folder "${folder}".`,
       );
     }
-    return toPhoto(asset, r.caption, r.alt);
+    return toPhoto(asset, r.alt);
   });
 }
 

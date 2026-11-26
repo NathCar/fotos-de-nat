@@ -5,9 +5,17 @@ import { MAX_EDGE, photoUrl } from "../lib/cloudinary";
 interface Props {
   photo: Photo;
   priority?: boolean;
+  /** The photo's displayed width, for picking a file size. Defaults to full width. */
+  sizes?: string;
+  class?: string;
 }
 
-const { photo, priority = false } = Astro.props;
+const {
+  photo,
+  priority = false,
+  sizes = "100vw",
+  class: className,
+} = Astro.props;
 const { width, height } = photo;
 
 const longEdgeScale = Math.min(1, MAX_EDGE / Math.max(width, height));
@@ -16,13 +24,10 @@ const widths = [...new Set([480, 800, 1200, 1600, maxWidth])]
   .filter((w) => w <= maxWidth)
   .sort((a, b) => a - b);
 const srcset = widths.map((w) => `${photoUrl(photo, w)} ${w}w`).join(", ");
-
-// Photos are sized by height, so derive width from aspect ratio. Keep 72px in sync with --head.
-const sizes = `calc((100vh - 72px) * ${(0.92 * (width / height)).toFixed(4)})`;
 ---
 
 <img
-  class="photo"
+  class:list={["photo", className]}
   src={photoUrl(photo, widths.at(-1)!)}
   srcset={srcset}
   sizes={sizes}
@@ -39,9 +44,8 @@ const sizes = `calc((100vh - 72px) * ${(0.92 * (width / height)).toFixed(4)})`;
 
 <style>
   .photo {
-    height: 100%;
-    width: auto;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto;
     user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;
