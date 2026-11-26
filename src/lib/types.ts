@@ -1,19 +1,22 @@
-import type { ImageMetadata } from "astro";
+import type { TemplateName } from "../templates/names";
 
 export interface Photo {
-  src: ImageMetadata;
+  publicId: string;
+  name: string;
+  version: number;
+  width: number;
+  height: number;
   alt: string;
   caption?: string;
-  date?: string;
-  camera?: string;
 }
 
 export interface Gallery {
   slug: string;
-  order: number;
-  location: string;
+  number: number;
+  title: string;
   filmStock?: string;
   intro?: string;
+  template: TemplateName;
   /** 1-based index of the photo to open on; random when unset. */
   cover?: number;
   photos: Photo[];

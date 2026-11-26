@@ -1,0 +1,10 @@
+number: 3
+title: Greece
+intro: Photographs from Greece.
+template: carousel
+cover: IMG_4877
+photos:
+  - IMG_4862
+  - IMG_4853
+  - IMG_4867
+  - IMG_4877

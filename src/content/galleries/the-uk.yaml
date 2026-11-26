@@ -1,0 +1,11 @@
+number: 9
+title: The UK
+intro: Photographs from the UK.
+template: carousel
+photos:
+  - IMG_3251
+  - IMG_3877
+  - IMG_3250
+  - IMG_3880
+  - IMG_3252
+  - IMG_3879

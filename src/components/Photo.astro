@@ -1,6 +1,6 @@
 ---
-import { Image } from "astro:assets";
 import type { Photo } from "../lib/types";
+import { MAX_EDGE, photoUrl } from "../lib/cloudinary";
 
 interface Props {
   photo: Photo;
@@ -8,27 +8,33 @@ interface Props {
 }
 
 const { photo, priority = false } = Astro.props;
-const { src } = photo;
+const { width, height } = photo;
 
-const widths = [...new Set([480, 800, 1200, 1600, 2048, src.width])]
-  .filter((w) => w <= src.width)
+const longEdgeScale = Math.min(1, MAX_EDGE / Math.max(width, height));
+const maxWidth = Math.round(width * longEdgeScale);
+const widths = [...new Set([480, 800, 1200, 1600, maxWidth])]
+  .filter((w) => w <= maxWidth)
   .sort((a, b) => a - b);
+const srcset = widths.map((w) => `${photoUrl(photo, w)} ${w}w`).join(", ");
 
 // Photos are sized by height, so derive width from aspect ratio. Keep 72px in sync with --head.
-const displayWidth = `calc((100vh - 72px) * ${(0.92 * (src.width / src.height)).toFixed(4)})`;
+const sizes = `calc((100vh - 72px) * ${(0.92 * (width / height)).toFixed(4)})`;
 ---
 
-<Image
+<img
   class="photo"
-  src={src}
+  src={photoUrl(photo, widths.at(-1)!)}
+  srcset={srcset}
+  sizes={sizes}
+  width={maxWidth}
+  height={Math.round(height * longEdgeScale)}
   alt={photo.alt}
-  widths={widths}
-  sizes={displayWidth}
-  style={`aspect-ratio:${src.width}/${src.height}`}
+  style={`aspect-ratio:${width}/${height}`}
   loading={priority ? "eager" : "lazy"}
   fetchpriority={priority ? "high" : "auto"}
   decoding="async"
-  draggable={false}
+  draggable="false"
+  data-protected
 />
 
 <style>
@@ -37,6 +43,8 @@ const displayWidth = `calc((100vh - 72px) * ${(0.92 * (src.width / src.height)).
     width: auto;
     object-fit: cover;
     user-select: none;
+    -webkit-user-select: none;
     -webkit-user-drag: none;
+    -webkit-touch-callout: none;
   }
 </style>

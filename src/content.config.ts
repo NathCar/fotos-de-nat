@@ -1,32 +1,28 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { TEMPLATE_NAMES } from "./templates/names";
+
+const photoRef = z.union([
+  z.string(),
+  z.object({
+    id: z.string(),
+    caption: z.string().optional(),
+    alt: z.string().optional(),
+  }),
+]);
 
 const galleries = defineCollection({
-  loader: glob({ pattern: "**/index.md", base: "./src/content/galleries" }),
-  schema: ({ image }) =>
-    z
-      .object({
-        order: z.number().int().positive(),
-        location: z.string(),
-        filmStock: z.string().optional(),
-        intro: z.string().optional(),
-        cover: z.number().int().positive().optional(),
-        photos: z
-          .array(
-            z.object({
-              src: image(),
-              caption: z.string().optional(),
-              alt: z.string().optional(),
-              date: z.string().optional(),
-              camera: z.string().optional(),
-            }),
-          )
-          .min(1),
-      })
-      .refine((d) => d.cover === undefined || d.cover <= d.photos.length, {
-        message: "cover must be a 1-based index within photos",
-        path: ["cover"],
-      }),
+  loader: glob({ pattern: "*.{yaml,yml}", base: "./src/content/galleries" }),
+  schema: z.object({
+    number: z.number().int().positive(),
+    title: z.string(),
+    filmStock: z.string().optional(),
+    intro: z.string().optional(),
+    template: z.enum(TEMPLATE_NAMES).default("carousel"),
+    folder: z.string().optional(),
+    cover: z.string().optional(),
+    photos: z.array(photoRef).min(1).optional(),
+  }),
 });
 
 export const collections = { galleries };

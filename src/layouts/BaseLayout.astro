@@ -21,5 +21,8 @@ const { title, description, image } = Astro.props;
   </head>
   <body>
     <slot />
+    <script>
+      import "../scripts/protect-photos";
+    </script>
   </body>
 </html>
