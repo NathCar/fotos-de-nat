@@ -22,12 +22,27 @@ const PATTERN = [
   { col: 2, span: 9, drop: 0 },
 ];
 
+const isPortrait = (p: { width: number; height: number }) => p.height > p.width;
+
+// In mostly-portrait galleries, landscapes read as small next to tall neighbours, so they get a wide row of their own.
+const FEATURE = { col: 2, span: 10, drop: 0 };
+const featureLandscapes =
+  gallery.photos.filter(isPortrait).length > gallery.photos.length / 2;
+
 // Portraits take a narrower slot so they don't tower over the page.
 const placed = gallery.photos.map((photo, i) => {
+  if (featureLandscapes && !isPortrait(photo))
+    return { photo, ...FEATURE, feature: true };
   const slot = PATTERN[i % PATTERN.length];
-  const portrait = photo.height > photo.width;
-  const span = portrait ? Math.max(4, Math.round(slot.span * 0.7)) : slot.span;
-  return { photo, ...slot, span: Math.min(span, 13 - slot.col) };
+  const span = isPortrait(photo)
+    ? Math.max(4, Math.round(slot.span * 0.7))
+    : slot.span;
+  return {
+    photo,
+    ...slot,
+    span: Math.min(span, 13 - slot.col),
+    feature: false,
+  };
 });
 ---
 
@@ -39,9 +54,9 @@ const placed = gallery.photos.map((photo, i) => {
 >
   <ul class="grid">
     {
-      placed.map(({ photo, col, span, drop }, i) => (
+      placed.map(({ photo, col, span, drop, feature }, i) => (
         <li
-          class="item"
+          class:list={["item", { feature }]}
           style={`--col:${col};--span:${span};--drop:${drop}rem`}
         >
           <Photo
@@ -123,7 +138,8 @@ const placed = gallery.photos.map((photo, i) => {
     .item:nth-child(even) {
       grid-column: 2 / span 5;
     }
-    .item:nth-child(4n + 1) {
+    .item:nth-child(4n + 1),
+    .item.feature {
       grid-column: 1 / span 6;
     }
   }
