@@ -4,7 +4,7 @@ export function initStrip(root: HTMLElement): void {
   const toggles = Array.from(
     row.querySelectorAll<HTMLButtonElement>("button[aria-pressed]"),
   );
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let frame = 0;
 
   function setOpen(btn: HTMLButtonElement, open: boolean): void {
     btn.setAttribute("aria-pressed", String(open));
@@ -22,12 +22,38 @@ export function initStrip(root: HTMLElement): void {
     }
   }
 
-  function reveal(btn: HTMLButtonElement): void {
-    btn.scrollIntoView({
-      inline: "center",
-      block: "nearest",
-      behavior: reduced ? "auto" : "smooth",
-    });
+  function centeredScroll(btn: HTMLElement): number {
+    const b = btn.getBoundingClientRect();
+    const r = row!.getBoundingClientRect();
+    return row!.scrollLeft + b.left + b.width / 2 - (r.left + r.width / 2);
+  }
+
+  // Scrolls in step with the CSS height transition, so growing and centring happen together.
+  function follow(btn: HTMLButtonElement): void {
+    cancelAnimationFrame(frame);
+    void getComputedStyle(btn).height; // flush styles so the height transition exists
+    const resize = btn
+      .getAnimations()
+      .find(
+        (a): a is CSSTransition =>
+          a instanceof CSSTransition && a.transitionProperty === "height",
+      );
+    if (!resize) {
+      row!.scrollLeft = centeredScroll(btn);
+      return;
+    }
+    const [from, to] = (resize.effect as KeyframeEffect)
+      .getKeyframes()
+      .map((k) => parseFloat(String(k.height)));
+    const offset = centeredScroll(btn) - row!.scrollLeft;
+    const step = () => {
+      const h = btn.getBoundingClientRect().height;
+      const progress = to === from ? 1 : (h - from) / (to - from);
+      row!.scrollLeft = centeredScroll(btn) - offset * (1 - progress);
+      if (resize.playState !== "finished" && resize.playState !== "idle")
+        frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
   }
 
   toggles.forEach((btn) => {
@@ -38,26 +64,29 @@ export function initStrip(root: HTMLElement): void {
           setOpen(other, false);
       });
       setOpen(btn, opening);
-      if (!opening) return;
-      if (reduced) reveal(btn);
-      else
-        btn.addEventListener(
-          "transitionend",
-          (e) => e.propertyName === "height" && reveal(btn),
-          { once: true },
-        );
+      follow(btn);
     });
   });
 
   root.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    toggles.forEach((btn) => setOpen(btn, false));
+    const open = toggles.find((b) => b.getAttribute("aria-pressed") === "true");
+    if (!open) return;
+    setOpen(open, false);
+    follow(open);
   });
+
+  // Letting the visitor take over mid-animation feels better than fighting their scroll.
+  for (const type of ["pointerdown", "touchstart"])
+    row.addEventListener(type, () => cancelAnimationFrame(frame), {
+      passive: true,
+    });
 
   // A mouse wheel only scrolls vertically, so turn it into horizontal movement.
   row.addEventListener(
     "wheel",
     (e) => {
+      cancelAnimationFrame(frame);
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
       e.preventDefault();
       row.scrollLeft += e.deltaY;
