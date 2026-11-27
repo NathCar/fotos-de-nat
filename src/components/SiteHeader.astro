@@ -41,13 +41,8 @@ const { galleries, currentSlug } = Astro.props;
     align-items: center;
     justify-content: space-between;
     padding: 0 clamp(18px, 3vw, 34px);
-    border-bottom: 1px solid var(--hair);
     position: relative;
     z-index: 5;
-  }
-  /* Empty third flex item so space-between centres the pager on wide screens. */
-  .top::after {
-    content: "";
   }
   .mark {
     font-size: 24px;
@@ -86,9 +81,6 @@ const { galleries, currentSlug } = Astro.props;
     background: var(--ink);
   }
   @media (max-width: 620px) {
-    .top::after {
-      display: none;
-    }
     .mark {
       font-size: 19px;
     }

@@ -217,10 +217,11 @@ The build stops with a clear error if:
 
 Set `template:` in a gallery's YAML file to choose its layout.
 
-| Template   | Layout                                                                                                                                                                    |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `carousel` | One photo at a time in a looping, draggable horizontal strip. Opens on the `cover`. The default.                                                                          |
-| `scatter`  | A vertical scroll of photos at varied sizes and positions, with plenty of white space. Photos load as you scroll and fade in. On phones, photos alternate left and right. |
+| Template   | Layout                                                                                                                                                                     |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `carousel` | One photo at a time in a looping, draggable horizontal strip. Opens on the `cover`. The default.                                                                           |
+| `scatter`  | A vertical scroll of photos at varied sizes and positions, with plenty of white space. Photos load as you scroll and fade in. On phones, photos alternate left and right.  |
+| `strip`    | A row of photos along the top of the page that scrolls sideways with a trackpad, mouse wheel or swipe. Click a photo to enlarge it; click again or press Esc to shrink it. |
 
 In `scatter`, the order of `photos` sets the layout, and `cover` has no effect
 because the gallery always starts at the top. The layout depends on the gallery's
@@ -234,6 +235,10 @@ photos:
   down to pair with the next portrait.
 
 On phones, photos alternate left and right, and landscapes fill the full width.
+
+In `strip`, photos appear in the order of `photos`, and `cover` has no effect because
+the row always starts at the first photo. Only one photo is enlarged at a time. On
+phones, an enlarged photo is capped at the screen width.
 
 ## Add a new template
 
@@ -384,6 +389,7 @@ src/
     index.ts                  template name → component
     carousel/                 the horizontal carousel template
     scatter/                  the scattered vertical-scroll template
+    strip/                    the sideways-scrolling row with click-to-enlarge
   components/
     Photo.astro               one protected, responsive photo
     GalleryView.astro         header + the gallery's template

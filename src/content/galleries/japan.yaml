@@ -1,7 +1,7 @@
 number: 10
 title: Japan
 intro: Photographs from Japan.
-template: scatter
+template: strip
 folder: fdn
 photos:
   - DSCF6018
