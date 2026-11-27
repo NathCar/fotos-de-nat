@@ -14,6 +14,7 @@ as protected 2000px copies, and each gallery is a short YAML config file.
 - [Use this repo for your own photos](#use-this-repo-for-your-own-photos)
 - [Add or change a gallery](#add-or-change-a-gallery)
 - [Gallery config reference](#gallery-config-reference)
+- [Templates](#templates)
 - [Add a new template](#add-a-new-template)
 - [How photos are protected](#how-photos-are-protected)
 - [Commands](#commands)
@@ -179,14 +180,14 @@ header.
 
 ### Optional
 
-| Field       | Meaning                                                                     | If left out                                                                                                                 |
-| ----------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `intro`     | Page description for search engines and link previews.                      | "Film Photography from Japan.", built from the site `tagline` and title. The home page uses the site `description` instead. |
-| `template`  | How the photos are laid out. See [Add a new template](#add-a-new-template). | `carousel`                                                                                                                  |
-| `cover`     | The photo the gallery opens on, also used in link previews.                 | Opens on a random photo; link previews use the first photo                                                                  |
-| `photos`    | Which photos to show, in this order.                                        | Every photo in the folder, in random order, reshuffled on each deploy                                                       |
-| `folder`    | The Cloudinary folder to read photos from.                                  | The filename without `.yaml`                                                                                                |
-| `filmStock` | Shown after the title, e.g. "Japan · Portra 400".                           | Only the title is shown                                                                                                     |
+| Field       | Meaning                                                     | If left out                                                                                                                 |
+| ----------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `intro`     | Page description for search engines and link previews.      | "Film Photography from Japan.", built from the site `tagline` and title. The home page uses the site `description` instead. |
+| `template`  | How the photos are laid out. See [Templates](#templates).   | `carousel`                                                                                                                  |
+| `cover`     | The photo the gallery opens on, also used in link previews. | Opens on a random photo; link previews use the first photo                                                                  |
+| `photos`    | Which photos to show, in this order.                        | Every photo in the folder, in random order, reshuffled on each deploy                                                       |
+| `folder`    | The Cloudinary folder to read photos from.                  | The filename without `.yaml`                                                                                                |
+| `filmStock` | Shown after the title, e.g. "Japan · Portra 400".           | Only the title is shown                                                                                                     |
 
 ### Photo entries
 
@@ -211,6 +212,19 @@ The build stops with a clear error if:
 - a listed photo or the `cover` isn't in the Cloudinary folder;
 - the folder is empty or contains a public (non-protected) photo;
 - `template` names a template that doesn't exist.
+
+## Templates
+
+Set `template:` in a gallery's YAML file to choose its layout.
+
+| Template   | Layout                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `carousel` | One photo at a time in a looping, draggable horizontal strip. Opens on the `cover`. The default.                                                                          |
+| `scatter`  | A vertical scroll of photos at varied sizes and positions, with plenty of white space. Photos load as you scroll and fade in. On phones, photos alternate left and right. |
+
+In `scatter`, the order of `photos` sets the layout: the pattern repeats every 8
+photos, and portrait photos get narrower slots. The `cover` field has no effect
+because the gallery always starts at the top.
 
 ## Add a new template
 
@@ -293,7 +307,7 @@ Templates are registered in two files:
 - Add the name to `src/templates/names.ts`:
 
   ```ts
-  export const TEMPLATE_NAMES = ["carousel", "vertical"] as const;
+  export const TEMPLATE_NAMES = ["carousel", "scatter", "vertical"] as const;
   ```
 
 - Map the name to the component in `src/templates/index.ts`:
@@ -303,6 +317,7 @@ Templates are registered in two files:
 
   export const TEMPLATES: Record<TemplateName, AstroComponentFactory> = {
     carousel: Carousel,
+    scatter: Scatter,
     vertical: Vertical,
   };
   ```
@@ -323,7 +338,7 @@ Set `template: vertical` in any gallery's YAML file.
   narrower, as in the example above. Pass `class` to style the photo from your
   template with `:global(...)`, since Astro scopes styles to each component.
 - **Interactivity:** put client-side code in the template's own folder and load it
-  from a `<script>` in the component, as the carousel does with `carousel.ts`.
+  from a `<script>` in the component, as `carousel.ts` and `scatter.ts` do.
 - **Page scroll:** `global.css` sets `overflow: hidden` on `body` because the carousel
   fills the screen. A scrolling template should scroll its own container, as in the
   example above.
@@ -359,6 +374,7 @@ src/
     names.ts                  list of template names
     index.ts                  template name → component
     carousel/                 the horizontal carousel template
+    scatter/                  the scattered vertical-scroll template
   components/
     Photo.astro               one protected, responsive photo
     GalleryView.astro         header + the gallery's template

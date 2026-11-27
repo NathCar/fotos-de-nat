@@ -1,0 +1,137 @@
+---
+import Photo from "../../components/Photo.astro";
+import type { Gallery } from "../../lib/types";
+import { galleryName } from "../../lib/gallery-name";
+
+interface Props {
+  gallery: Gallery;
+}
+
+const { gallery } = Astro.props;
+const name = galleryName(gallery);
+
+// Start column, span and drop (in rem) on a 12-column grid; repeats every 8 photos.
+const PATTERN = [
+  { col: 3, span: 4, drop: 0 },
+  { col: 9, span: 3, drop: 10 },
+  { col: 1, span: 6, drop: 0 },
+  { col: 8, span: 3, drop: 6 },
+  { col: 4, span: 8, drop: 0 },
+  { col: 2, span: 4, drop: 0 },
+  { col: 7, span: 5, drop: 8 },
+  { col: 2, span: 7, drop: 0 },
+];
+
+// Portraits take a narrower slot so they don't tower over the page.
+const placed = gallery.photos.map((photo, i) => {
+  const slot = PATTERN[i % PATTERN.length];
+  const portrait = photo.height > photo.width;
+  const span = portrait ? Math.max(3, Math.round(slot.span * 0.6)) : slot.span;
+  return { photo, ...slot, span: Math.min(span, 13 - slot.col) };
+});
+---
+
+<section
+  class="scatter"
+  aria-label={`${name} gallery`}
+  tabindex="0"
+  data-scatter
+>
+  <ul class="grid">
+    {
+      placed.map(({ photo, col, span, drop }, i) => (
+        <li
+          class="item"
+          style={`--col:${col};--span:${span};--drop:${drop}rem`}
+        >
+          <Photo
+            photo={photo}
+            priority={i < 2}
+            sizes={`(max-width: 700px) 90vw, ${Math.ceil((span / 12) * 100)}vw`}
+            class="scatter-photo"
+          />
+        </li>
+      ))
+    }
+  </ul>
+  <p class="cap">{name} &nbsp;·&nbsp; {gallery.photos.length} photos</p>
+</section>
+
+<script>
+  import { initScatter } from "./scatter";
+  document
+    .querySelectorAll<HTMLElement>("[data-scatter]")
+    .forEach((el) => initScatter(el));
+</script>
+
+<style>
+  .scatter {
+    height: calc(100dvh - var(--head));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(16px, 2.5vw, 40px);
+    row-gap: clamp(64px, 10vw, 160px);
+    align-items: start;
+    padding: clamp(24px, 4vw, 56px) clamp(18px, 3vw, 50px) 96px;
+  }
+  .item {
+    grid-column: var(--col) / span var(--span);
+    margin-top: var(--drop);
+  }
+  .item :global(.scatter-photo) {
+    width: auto;
+    max-width: 100%;
+    max-height: 85dvh;
+    background: #f0eee9;
+  }
+
+  /* Fades in once scatter.ts marks it visible; no-JS keeps photos shown. */
+  .scatter[data-enhanced] .item {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .scatter[data-enhanced] .item.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cap {
+    text-align: center;
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 0.03em;
+    padding-bottom: 40px;
+  }
+
+  @media (max-width: 700px) {
+    .grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      row-gap: 40px;
+    }
+    .item {
+      grid-column: 1 / span 4;
+      margin-top: 0;
+    }
+    .item:nth-child(even) {
+      grid-column: 3 / span 4;
+    }
+    .item:nth-child(4n + 1) {
+      grid-column: 1 / span 6;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scatter[data-enhanced] .item {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
