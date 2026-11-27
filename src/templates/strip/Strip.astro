@@ -31,7 +31,7 @@ const sizesAt = (scale: number, p: { width: number; height: number }) =>
             <Photo
               photo={photo}
               priority={i < 3}
-              sizes={sizesAt(0.5, photo)}
+              sizes={sizesAt(0.85, photo)}
               class="strip-photo"
             />
           </button>
@@ -52,8 +52,13 @@ const sizesAt = (scale: number, p: { width: number; height: number }) =>
 <style>
   .strip {
     --gutter: 15px;
+    --gap: 6px;
     --open: calc(100dvh - var(--head) - 64px);
-    --rest: calc(var(--open) * 0.5);
+    /* Three 2:3 portraits fill the width; capped so enlarging still grows. */
+    --rest: min(
+      calc((100vw - 2 * var(--gutter) - 2 * var(--gap)) * 0.5),
+      calc(var(--open) * 0.85)
+    );
     height: calc(100dvh - var(--head));
     display: flex;
     flex-direction: column;
@@ -64,7 +69,7 @@ const sizesAt = (scale: number, p: { width: number; height: number }) =>
     list-style: none;
     display: flex;
     align-items: flex-start;
-    gap: 6px;
+    gap: var(--gap);
     padding: var(--gutter);
     overflow-x: auto;
     overflow-y: hidden;
