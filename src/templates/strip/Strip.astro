@@ -1,0 +1,120 @@
+---
+import Photo from "../../components/Photo.astro";
+import type { Gallery } from "../../lib/types";
+import { galleryName } from "../../lib/gallery-name";
+
+interface Props {
+  gallery: Gallery;
+}
+
+const { gallery } = Astro.props;
+const name = galleryName(gallery);
+
+// Keep these in sync with --head, --rest and --open below.
+const sizesAt = (scale: number, p: { width: number; height: number }) =>
+  `calc((100vh - 72px - 64px) * ${(scale * (p.width / p.height)).toFixed(4)})`;
+---
+
+<section class="strip" aria-label={`${name} gallery`} data-strip>
+  <ul class="row" data-row tabindex="0">
+    {
+      gallery.photos.map((photo, i) => (
+        <li class="item">
+          <button
+            class="toggle"
+            type="button"
+            aria-pressed="false"
+            aria-label={`Enlarge photo ${i + 1} of ${gallery.photos.length}`}
+            data-sizes-open={sizesAt(1, photo)}
+            style={`--ar:${(photo.width / photo.height).toFixed(4)}`}
+          >
+            <Photo
+              photo={photo}
+              priority={i < 3}
+              sizes={sizesAt(0.5, photo)}
+              class="strip-photo"
+            />
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="cap">{name} &nbsp;·&nbsp; {gallery.photos.length} photos</p>
+</section>
+
+<script>
+  import { initStrip } from "./strip";
+  document
+    .querySelectorAll<HTMLElement>("[data-strip]")
+    .forEach((el) => initStrip(el));
+</script>
+
+<style>
+  .strip {
+    --gutter: 15px;
+    --open: calc(100dvh - var(--head) - 64px);
+    --rest: calc(var(--open) * 0.5);
+    height: calc(100dvh - var(--head));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .row {
+    list-style: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: var(--gutter);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  .row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .item {
+    flex: 0 0 auto;
+  }
+
+  .toggle {
+    display: block;
+    height: var(--rest);
+    padding: 0;
+    border: 0;
+    background: #f0eee9;
+    cursor: zoom-in;
+    transition: height 0.6s cubic-bezier(0.83, 0, 0.17, 1);
+  }
+  .toggle[aria-pressed="true"] {
+    height: min(var(--open), calc((100vw - 2 * var(--gutter)) / var(--ar)));
+    cursor: zoom-out;
+  }
+
+  .toggle :global(.strip-photo) {
+    height: 100%;
+    width: auto;
+    max-width: none;
+  }
+
+  .cap {
+    padding: 0 var(--gutter) 20px;
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 700px) {
+    .strip {
+      --rest: calc(var(--open) * 0.6);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toggle {
+      transition: none;
+    }
+  }
+</style>
