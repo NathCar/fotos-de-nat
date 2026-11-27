@@ -1,7 +1,7 @@
 number: 7
 title: "Black & White"
 intro: A black and white series.
-template: carousel
+template: scatter
 photos:
   - 4f0c6f6f-8987-4a2a-a897-d0d95f1b362b
   - 93fecfd1-5751-4dcf-8bb7-611a9b8bf013

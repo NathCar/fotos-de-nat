@@ -1,7 +1,7 @@
 number: 8
 title: Vietnam
 intro: Photographs from Vietnam.
-template: carousel
+template: scatter
 cover: IMG_7546
 photos:
   - IMG_7548

@@ -1,7 +1,7 @@
 number: 2
 title: Colombia
 intro: Photographs from Colombia.
-template: carousel
+template: scatter
 cover: IMG_3100
 photos:
   - IMG_3070

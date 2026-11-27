@@ -1,7 +1,7 @@
 number: 9
 title: The UK
 intro: Photographs from the UK.
-template: carousel
+template: scatter
 photos:
   - IMG_3251
   - IMG_3877
