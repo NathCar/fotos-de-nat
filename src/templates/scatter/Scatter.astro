@@ -12,21 +12,21 @@ const name = galleryName(gallery);
 
 // Start column, span and drop (in rem) on a 12-column grid; repeats every 8 photos.
 const PATTERN = [
-  { col: 3, span: 4, drop: 0 },
-  { col: 9, span: 3, drop: 10 },
-  { col: 1, span: 6, drop: 0 },
-  { col: 8, span: 3, drop: 6 },
-  { col: 4, span: 8, drop: 0 },
-  { col: 2, span: 4, drop: 0 },
-  { col: 7, span: 5, drop: 8 },
-  { col: 2, span: 7, drop: 0 },
+  { col: 2, span: 6, drop: 0 },
+  { col: 9, span: 4, drop: 10 },
+  { col: 1, span: 7, drop: 0 },
+  { col: 9, span: 4, drop: 6 },
+  { col: 3, span: 10, drop: 0 },
+  { col: 1, span: 5, drop: 0 },
+  { col: 7, span: 6, drop: 8 },
+  { col: 2, span: 9, drop: 0 },
 ];
 
 // Portraits take a narrower slot so they don't tower over the page.
 const placed = gallery.photos.map((photo, i) => {
   const slot = PATTERN[i % PATTERN.length];
   const portrait = photo.height > photo.width;
-  const span = portrait ? Math.max(3, Math.round(slot.span * 0.6)) : slot.span;
+  const span = portrait ? Math.max(4, Math.round(slot.span * 0.7)) : slot.span;
   return { photo, ...slot, span: Math.min(span, 13 - slot.col) };
 });
 ---
@@ -75,7 +75,7 @@ const placed = gallery.photos.map((photo, i) => {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: clamp(16px, 2.5vw, 40px);
-    row-gap: clamp(64px, 10vw, 160px);
+    row-gap: clamp(56px, 8vw, 128px);
     align-items: start;
     padding: clamp(24px, 4vw, 56px) clamp(18px, 3vw, 50px) 96px;
   }
@@ -86,7 +86,7 @@ const placed = gallery.photos.map((photo, i) => {
   .item :global(.scatter-photo) {
     width: auto;
     max-width: 100%;
-    max-height: 85dvh;
+    max-height: 90dvh;
     background: #f0eee9;
   }
 
@@ -117,11 +117,11 @@ const placed = gallery.photos.map((photo, i) => {
       row-gap: 40px;
     }
     .item {
-      grid-column: 1 / span 4;
+      grid-column: 1 / span 5;
       margin-top: 0;
     }
     .item:nth-child(even) {
-      grid-column: 3 / span 4;
+      grid-column: 2 / span 5;
     }
     .item:nth-child(4n + 1) {
       grid-column: 1 / span 6;
