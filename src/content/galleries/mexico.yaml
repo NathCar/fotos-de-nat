@@ -1,7 +1,7 @@
 number: 6
 title: Mexico
 intro: Photographs from Mexico.
-template: carousel
+template: scatter
 cover: IMG_4028
 photos:
   - IMG_3991

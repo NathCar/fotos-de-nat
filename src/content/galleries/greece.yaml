@@ -1,7 +1,7 @@
 number: 3
 title: Greece
 intro: Photographs from Greece.
-template: carousel
+template: scatter
 cover: IMG_4877
 photos:
   - IMG_4862

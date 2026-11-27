@@ -1,7 +1,7 @@
 number: 4
 title: Nicaragua
 intro: Photographs from Nicaragua.
-template: carousel
+template: scatter
 cover: IMG_4033
 photos:
   - IMG_4033
