@@ -24,7 +24,7 @@ const PATTERN = [
 
 const isPortrait = (p: { width: number; height: number }) => p.height > p.width;
 
-// In mostly-portrait galleries, landscapes read as small next to tall neighbours, so they get a wide row of their own.
+// Landscapes look small beside tall portraits, so give them their own row.
 const FEATURE = { col: 2, span: 10, drop: 0 };
 const featureLandscapes =
   gallery.photos.filter(isPortrait).length > gallery.photos.length / 2;
