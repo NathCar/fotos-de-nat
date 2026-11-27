@@ -223,7 +223,8 @@ Set `template:` in a gallery's YAML file to choose its layout.
 | `scatter`  | A vertical scroll of photos at varied sizes and positions, with plenty of white space. Photos load as you scroll and fade in. On phones, photos alternate left and right. |
 
 In `scatter`, the order of `photos` sets the layout: the pattern repeats every 8
-photos, and portrait photos get narrower slots. The `cover` field has no effect
+photos, and portrait photos get narrower slots. In a gallery that's mostly portrait, each
+landscape photo gets a wide row of its own so it doesn't look small next to them. The `cover` field has no effect
 because the gallery always starts at the top.
 
 ## Add a new template
