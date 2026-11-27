@@ -222,10 +222,18 @@ Set `template:` in a gallery's YAML file to choose its layout.
 | `carousel` | One photo at a time in a looping, draggable horizontal strip. Opens on the `cover`. The default.                                                                          |
 | `scatter`  | A vertical scroll of photos at varied sizes and positions, with plenty of white space. Photos load as you scroll and fade in. On phones, photos alternate left and right. |
 
-In `scatter`, the order of `photos` sets the layout: the pattern repeats every 8
-photos, and portrait photos get narrower slots. In a gallery that's mostly portrait, each
-landscape photo gets a wide row of its own so it doesn't look small next to them. The `cover` field has no effect
-because the gallery always starts at the top.
+In `scatter`, the order of `photos` sets the layout, and `cover` has no effect
+because the gallery always starts at the top. The layout depends on the gallery's
+photos:
+
+- **Mostly landscape:** a repeating pattern of offset pairs and single wide photos.
+  Portraits get narrower slots.
+- **Mostly portrait:** two photos per row, offset vertically and alternating sides.
+  A landscape always shares its row with a portrait and takes about two thirds of
+  the width. If your list puts two landscapes next to each other, the second moves
+  down to pair with the next portrait.
+
+On phones, photos alternate left and right, and landscapes fill the full width.
 
 ## Add a new template
 
